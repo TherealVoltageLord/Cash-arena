@@ -34,6 +34,7 @@ exports.register = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ 
+        success: false,
         message: 'Validation failed', 
         errors: errors.array() 
       });
@@ -44,6 +45,7 @@ exports.register = async (req, res) => {
     const validationErrors = validateRegistration(username, email, password);
     if (validationErrors.length > 0) {
       return res.status(400).json({ 
+        success: false,
         message: 'Validation failed', 
         errors: validationErrors 
       });
@@ -52,6 +54,7 @@ exports.register = async (req, res) => {
     const existingIP = await User.findOne({ lastIP: req.ip });
     if (existingIP) {
       return res.status(400).json({ 
+        success: false,
         message: 'One account per IP address is allowed' 
       });
     }
@@ -59,6 +62,7 @@ exports.register = async (req, res) => {
     const existingEmail = await User.findOne({ email: email.toLowerCase() });
     if (existingEmail) {
       return res.status(400).json({ 
+        success: false,
         message: 'Email already registered' 
       });
     }
@@ -68,6 +72,7 @@ exports.register = async (req, res) => {
     });
     if (existingUsername) {
       return res.status(400).json({ 
+        success: false,
         message: 'Username already taken' 
       });
     }
@@ -103,16 +108,22 @@ exports.register = async (req, res) => {
       await referrer.save();
     }
 
-    await sendVerificationEmail(user.email, emailVerificationToken);
+    const emailSent = await sendVerificationEmail(user.email, emailVerificationToken);
     
+    if (!emailSent) {
+      console.warn('Verification email failed to send for user:', user.email);
+    }
+
     res.status(201).json({ 
       success: true,
       message: 'Registration successful. Please check your email to verify your account.',
-      userId: user._id
+      userId: user._id,
+      emailSent: emailSent
     });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ 
+      success: false,
       message: 'Server error during registration' 
     });
   }
@@ -124,6 +135,7 @@ exports.login = async (req, res) => {
     
     if (!emailOrUsername || !password) {
       return res.status(400).json({ 
+        success: false,
         message: 'Email/username and password are required' 
       });
     }
@@ -137,6 +149,7 @@ exports.login = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({ 
+        success: false,
         message: 'Invalid credentials' 
       });
     }
@@ -144,6 +157,7 @@ exports.login = async (req, res) => {
     if (user.isLocked()) {
       const timeLeft = Math.ceil((user.lockUntil - Date.now()) / 60000);
       return res.status(400).json({ 
+        success: false,
         message: `Account temporarily locked. Try again in ${timeLeft} minutes.` 
       });
     }
@@ -155,18 +169,21 @@ exports.login = async (req, res) => {
       
       const attemptsLeft = 5 - user.loginAttempts;
       return res.status(400).json({ 
+        success: false,
         message: `Invalid credentials. ${attemptsLeft > 0 ? `${attemptsLeft} attempts remaining` : 'Account will be locked after next failed attempt'}` 
       });
     }
 
     if (!user.verified) {
       return res.status(400).json({ 
+        success: false,
         message: 'Please verify your email before logging in' 
       });
     }
 
     if (user.suspended) {
       return res.status(400).json({ 
+        success: false,
         message: `Account suspended. Reason: ${user.suspensionReason || 'Violation of terms'}` 
       });
     }
@@ -198,6 +215,7 @@ exports.login = async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ 
+      success: false,
       message: 'Server error during login' 
     });
   }
@@ -209,6 +227,7 @@ exports.forgotPassword = async (req, res) => {
     
     if (!email) {
       return res.status(400).json({ 
+        success: false,
         message: 'Email is required' 
       });
     }
@@ -217,6 +236,7 @@ exports.forgotPassword = async (req, res) => {
     
     if (!user) {
       return res.status(200).json({ 
+        success: true,
         message: 'If this email exists in our system, a password reset link will be sent.' 
       });
     }
@@ -237,15 +257,21 @@ exports.forgotPassword = async (req, res) => {
       }
     );
 
-    await sendPasswordResetEmail(user.email, token);
+    const emailSent = await sendPasswordResetEmail(user.email, token);
     
+    if (!emailSent) {
+      console.warn('Password reset email failed to send for:', user.email);
+    }
+
     res.json({ 
       success: true,
-      message: 'Password reset email sent' 
+      message: 'Password reset email sent',
+      emailSent: emailSent
     });
   } catch (error) {
     console.error('Forgot password error:', error);
     res.status(500).json({ 
+      success: false,
       message: 'Server error processing password reset' 
     });
   }
@@ -257,12 +283,14 @@ exports.resetPassword = async (req, res) => {
     
     if (!token || !newPassword) {
       return res.status(400).json({ 
+        success: false,
         message: 'Token and new password are required' 
       });
     }
 
     if (newPassword.length < 6) {
       return res.status(400).json({ 
+        success: false,
         message: 'Password must be at least 6 characters' 
       });
     }
@@ -275,6 +303,7 @@ exports.resetPassword = async (req, res) => {
 
     if (!resetRecord) {
       return res.status(400).json({ 
+        success: false,
         message: 'Invalid or expired reset token' 
       });
     }
@@ -282,6 +311,7 @@ exports.resetPassword = async (req, res) => {
     const user = await User.findOne({ email: resetRecord.email });
     if (!user) {
       return res.status(404).json({ 
+        success: false,
         message: 'User not found' 
       });
     }
@@ -300,6 +330,7 @@ exports.resetPassword = async (req, res) => {
   } catch (error) {
     console.error('Reset password error:', error);
     res.status(500).json({ 
+      success: false,
       message: 'Server error resetting password' 
     });
   }
@@ -316,6 +347,7 @@ exports.verifyEmail = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({ 
+        success: false,
         message: 'Invalid or expired verification token' 
       });
     }
@@ -332,6 +364,7 @@ exports.verifyEmail = async (req, res) => {
   } catch (error) {
     console.error('Email verification error:', error);
     res.status(500).json({ 
+      success: false,
       message: 'Server error verifying email' 
     });
   }
@@ -343,6 +376,7 @@ exports.resendVerification = async (req, res) => {
     
     if (!email) {
       return res.status(400).json({ 
+        success: false,
         message: 'Email is required' 
       });
     }
@@ -350,12 +384,14 @@ exports.resendVerification = async (req, res) => {
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(404).json({ 
+        success: false,
         message: 'User not found' 
       });
     }
 
     if (user.verified) {
       return res.status(400).json({ 
+        success: false,
         message: 'Email already verified' 
       });
     }
@@ -367,15 +403,21 @@ exports.resendVerification = async (req, res) => {
     user.emailVerificationExpires = emailVerificationExpires;
     await user.save();
 
-    await sendVerificationEmail(user.email, emailVerificationToken);
+    const emailSent = await sendVerificationEmail(user.email, emailVerificationToken);
     
+    if (!emailSent) {
+      console.warn('Resend verification email failed for:', user.email);
+    }
+
     res.json({ 
       success: true,
-      message: 'Verification email sent successfully' 
+      message: 'Verification email sent successfully',
+      emailSent: emailSent
     });
   } catch (error) {
     console.error('Resend verification error:', error);
     res.status(500).json({ 
+      success: false,
       message: 'Server error sending verification email' 
     });
   }
@@ -387,6 +429,7 @@ exports.refreshToken = async (req, res) => {
     
     if (!refreshToken) {
       return res.status(400).json({ 
+        success: false,
         message: 'Refresh token required' 
       });
     }
@@ -396,12 +439,14 @@ exports.refreshToken = async (req, res) => {
     
     if (!user) {
       return res.status(404).json({ 
+        success: false,
         message: 'User not found' 
       });
     }
 
     if (user.suspended) {
       return res.status(403).json({ 
+        success: false,
         message: 'Account suspended' 
       });
     }
@@ -414,6 +459,7 @@ exports.refreshToken = async (req, res) => {
     });
   } catch (error) {
     res.status(403).json({ 
+      success: false,
       message: 'Invalid refresh token' 
     });
   }
@@ -428,6 +474,7 @@ exports.logout = async (req, res) => {
   } catch (error) {
     console.error('Logout error:', error);
     res.status(500).json({ 
+      success: false,
       message: 'Server error during logout' 
     });
   }
@@ -438,6 +485,7 @@ exports.getProfile = async (req, res) => {
     const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({ 
+        success: false,
         message: 'User not found' 
       });
     }
@@ -458,12 +506,14 @@ exports.getProfile = async (req, res) => {
         totalEarned: user.totalEarned,
         totalWithdrawn: user.totalWithdrawn,
         totalReferrals: user.referrals.length,
-        joinedAt: user.createdAt
+        joinedAt: user.createdAt,
+        lastLogin: user.lastLogin
       } 
     });
   } catch (error) {
     console.error('Get profile error:', error);
     res.status(500).json({ 
+      success: false,
       message: 'Server error retrieving profile' 
     });
   }
@@ -476,15 +526,19 @@ exports.updateProfile = async (req, res) => {
     
     if (!user) {
       return res.status(404).json({ 
+        success: false,
         message: 'User not found' 
       });
     }
 
-    user.profile = {
-      fullName: fullName || user.profile.fullName,
-      phone: phone || user.profile.phone,
-      bankDetails: bankDetails || user.profile.bankDetails
-    };
+    if (fullName) user.profile.fullName = fullName;
+    if (phone) user.profile.phone = phone;
+    if (bankDetails) {
+      user.profile.bankDetails = {
+        ...user.profile.bankDetails,
+        ...bankDetails
+      };
+    }
 
     await user.save();
     
@@ -496,7 +550,58 @@ exports.updateProfile = async (req, res) => {
   } catch (error) {
     console.error('Update profile error:', error);
     res.status(500).json({ 
+      success: false,
       message: 'Server error updating profile' 
+    });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const user = await User.findById(req.userId);
+    
+    if (!user) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'User not found' 
+      });
+    }
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Current password and new password are required' 
+      });
+    }
+
+    const isCurrentPasswordValid = await user.comparePassword(currentPassword);
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Current password is incorrect' 
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'New password must be at least 6 characters' 
+      });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ 
+      success: true,
+      message: 'Password changed successfully' 
+    });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error changing password' 
     });
   }
 };
