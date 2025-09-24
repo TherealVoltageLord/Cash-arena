@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-const nodemailer = require('nodemailer');
 
 // Create transporter 
 const createTransporter = () => {
