@@ -7,9 +7,16 @@ exports.getActiveAnnouncements = async (req, res) => {
       endsAt: { $gte: new Date() }
     }).sort({ important: -1, createdAt: -1 });
 
-    res.json(announcements);
+    res.json({
+      success: true,
+      announcements
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Get announcements error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error retrieving announcements'
+    });
   }
 };
 
@@ -27,8 +34,17 @@ exports.createAnnouncement = async (req, res) => {
     });
 
     await announcement.save();
-    res.status(201).json({ message: 'Announcement created successfully' });
+    
+    res.json({
+      success: true,
+      message: 'Announcement created successfully',
+      announcement
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Create announcement error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error creating announcement'
+    });
   }
 };
