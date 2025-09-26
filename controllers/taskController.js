@@ -1,21 +1,67 @@
 const Task = require('../models/Task');
 const User = require('../models/User');
 
+exports.getTasks = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    const tasks = await Task.find({ active: true });
+
+    const tasksWithStatus = tasks.map(task => {
+      const completed = task.usersCompleted.some(comp => 
+        comp.userId.toString() === req.userId && comp.expiresAt > new Date()
+      );
+      
+      const canComplete = user.investment.tier === task.requiredLevel && !completed;
+      
+      return {
+        ...task.toObject(),
+        completed,
+        canComplete
+      };
+    });
+
+    res.json({
+      success: true,
+      tasks: tasksWithStatus
+    });
+  } catch (error) {
+    console.error('Get tasks error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error retrieving tasks'
+    });
+  }
+};
+
 exports.completeTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.taskId);
     const user = await User.findById(req.userId);
 
-    if (!task || !task.active) return res.status(404).json({ message: 'Task not found' });
+    if (!task || !task.active) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found'
+      });
+    }
+
     if (user.investment.tier !== task.requiredLevel) {
-      return res.status(400).json({ message: 'Investment tier requirement not met' });
+      return res.status(400).json({
+        success: false,
+        message: 'Investment tier requirement not met'
+      });
     }
 
     const alreadyCompleted = task.usersCompleted.some(comp => 
       comp.userId.toString() === req.userId && comp.expiresAt > new Date()
     );
 
-    if (alreadyCompleted) return res.status(400).json({ message: 'Task already completed' });
+    if (alreadyCompleted) {
+      return res.status(400).json({
+        success: false,
+        message: 'Task already completed'
+      });
+    }
 
     user.balance += task.reward;
     user.tasksCompleted.push({
@@ -33,9 +79,18 @@ exports.completeTask = async (req, res) => {
     await user.save();
     await task.save();
 
-    res.json({ message: 'Task completed successfully', reward: task.reward });
+    res.json({
+      success: true,
+      message: 'Task completed successfully',
+      reward: task.reward,
+      newBalance: user.balance
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Complete task error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error completing task'
+    });
   }
 };
 
