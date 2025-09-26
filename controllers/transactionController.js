@@ -8,7 +8,10 @@ exports.deposit = async (req, res) => {
     const maxDeposit = parseInt(process.env.MAX_DEPOSIT);
 
     if (amount < minDeposit || amount > maxDeposit) {
-      return res.status(400).json({ message: `Amount must be between ₦${minDeposit} and ₦${maxDeposit}` });
+      return res.status(400).json({
+        success: false,
+        message: `Amount must be between ₦${minDeposit} and ₦${maxDeposit}`
+      });
     }
 
     const transaction = new Transaction({
@@ -19,9 +22,18 @@ exports.deposit = async (req, res) => {
     });
 
     await transaction.save();
-    res.json({ message: 'Deposit request submitted for approval', transaction });
+    
+    res.json({
+      success: true,
+      message: 'Deposit request submitted for approval',
+      transaction
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Deposit error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error processing deposit'
+    });
   }
 };
 
@@ -31,11 +43,17 @@ exports.withdraw = async (req, res) => {
     const user = await User.findById(req.userId);
     
     if (amount < parseInt(process.env.MIN_WITHDRAWAL)) {
-      return res.status(400).json({ message: `Minimum withdrawal is ₦${process.env.MIN_WITHDRAWAL}` });
+      return res.status(400).json({
+        success: false,
+        message: `Minimum withdrawal is ₦${process.env.MIN_WITHDRAWAL}`
+      });
     }
 
     if (user.balance < amount) {
-      return res.status(400).json({ message: 'Insufficient balance' });
+      return res.status(400).json({
+        success: false,
+        message: 'Insufficient balance'
+      });
     }
 
     const lastWithdrawal = await Transaction.findOne({
@@ -46,7 +64,10 @@ exports.withdraw = async (req, res) => {
     });
 
     if (lastWithdrawal) {
-      return res.status(400).json({ message: 'One withdrawal per week allowed' });
+      return res.status(400).json({
+        success: false,
+        message: 'One withdrawal per week allowed'
+      });
     }
 
     user.balance -= amount;
@@ -60,8 +81,49 @@ exports.withdraw = async (req, res) => {
     });
 
     await transaction.save();
-    res.json({ message: 'Withdrawal request submitted', transaction });
+    
+    res.json({
+      success: true,
+      message: 'Withdrawal request submitted',
+      transaction
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Withdrawal error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error processing withdrawal'
+    });
+  }
+};
+
+exports.getTransactions = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, type } = req.query;
+    const query = { userId: req.userId };
+    
+    if (type) {
+      query.type = type;
+    }
+
+    const transactions = await Transaction.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+
+    const total = await Transaction.countDocuments(query);
+
+    res.json({
+      success: true,
+      transactions,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      total
+    });
+  } catch (error) {
+    console.error('Get transactions error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error retrieving transactions'
+    });
   }
 };
