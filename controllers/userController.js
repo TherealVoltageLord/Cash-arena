@@ -4,24 +4,38 @@ const Transaction = require('../models/Transaction');
 exports.getDashboard = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
     const today = new Date().toDateString();
     const canClaimToday = user.investment.lastClaim?.toDateString() !== today;
     
-    const dailyReward = calculateDailyROI(user.investment.amount, user.investment.tier);
+    const dailyReward = user.getDailyROI();
     
+    const recentTransactions = await Transaction.find({ userId: req.userId })
+      .sort({ createdAt: -1 })
+      .limit(5);
+
     res.json({
+      success: true,
       balance: user.balance,
       investment: user.investment,
       canClaimToday,
       dailyReward,
-      referralUrl: `${process.env.FRONTEND_URL}/ref/${user.referralCode}`
+      referralUrl: user.getReferralUrl(),
+      recentTransactions,
+      totalReferrals: user.referrals.length,
+      tasksCompleted: user.tasksCompleted.length
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Dashboard error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error retrieving dashboard'
+    });
   }
 };
-
-function calculateDailyROI(amount, tier) {
-  const rates = { Bronze: 0.5, Silver: 1.5, Gold: 2.5 };
-  return (amount * rates[tier]) / 100;
-}
