@@ -8,7 +8,9 @@ const {
   resendVerification,
   refreshToken,
   logout,
-  getProfile
+  getProfile,
+  updateProfile,
+  changePassword
 } = require('../controllers/authController');
 const { authenticateToken } = require('../middleware/authMiddleware');
 const router = express.Router();
@@ -22,5 +24,7 @@ router.post('/resend-verification', resendVerification);
 router.post('/refresh-token', refreshToken);
 router.post('/logout', authenticateToken, logout);
 router.get('/profile', authenticateToken, getProfile);
+router.put('/profile', authenticateToken, updateProfile);
+router.post('/change-password', authenticateToken, changePassword);
 
 module.exports = router;
