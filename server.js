@@ -81,7 +81,7 @@ app.get('/ref/:refCode', async (req, res) => {
     const user = await mongoose.model('User').findOne({ referralCode: refCode });
     
     if (user) {
-      res.redirect(/register?ref=${refCode});
+      res.redirect(`/register?ref=${refCode}`);
     } else {
       res.redirect('/register');
     }
