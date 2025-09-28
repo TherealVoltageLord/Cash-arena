@@ -11,6 +11,11 @@ const generateTokens = (userId) => {
   return { token, refreshToken };
 };
 
+// Function to escape regex special characters
+const escapeRegex = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 const validateRegistration = (username, email, password) => {
   const errors = [];
   
@@ -67,9 +72,9 @@ exports.register = async (req, res) => {
       });
     }
 
-    // FIXED: Proper RegExp syntax
+    // FIXED: Use case-insensitive search without regex
     const existingUsername = await User.findOne({ 
-      username: { $regex: new RegExp(^${username}$, 'i') }
+      username: { $regex: ^${escapeRegex(username)}$, $options: 'i' }
     });
     if (existingUsername) {
       return res.status(400).json({ 
@@ -141,11 +146,11 @@ exports.login = async (req, res) => {
       });
     }
 
-    // FIXED: Proper RegExp syntax
+    // FIXED: Use case-insensitive search without creating RegExp objects
     const user = await User.findOne({
       $or: [
         { email: emailOrUsername.toLowerCase() }, 
-        { username: { $regex: new RegExp(^${emailOrUsername}$, 'i') } }
+        { username: { $regex: ^${escapeRegex(emailOrUsername)}$, $options: 'i' } }
       ]
     });
 
