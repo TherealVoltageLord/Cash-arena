@@ -67,8 +67,9 @@ exports.register = async (req, res) => {
       });
     }
 
+    // FIXED: Proper RegExp syntax
     const existingUsername = await User.findOne({ 
-      username: new RegExp(`^${username}$`, 'i') 
+      username: { $regex: new RegExp(^${username}$, 'i') }
     });
     if (existingUsername) {
       return res.status(400).json({ 
@@ -140,10 +141,11 @@ exports.login = async (req, res) => {
       });
     }
 
+    // FIXED: Proper RegExp syntax
     const user = await User.findOne({
       $or: [
         { email: emailOrUsername.toLowerCase() }, 
-        { username: new RegExp(`^${emailOrUsername}$`, 'i') }
+        { username: { $regex: new RegExp(^${emailOrUsername}$, 'i') } }
       ]
     });
 
@@ -158,7 +160,7 @@ exports.login = async (req, res) => {
       const timeLeft = Math.ceil((user.lockUntil - Date.now()) / 60000);
       return res.status(400).json({ 
         success: false,
-        message: `Account temporarily locked. Try again in ${timeLeft} minutes.` 
+        message: Account temporarily locked. Try again in ${timeLeft} minutes. 
       });
     }
 
@@ -170,7 +172,7 @@ exports.login = async (req, res) => {
       const attemptsLeft = 5 - user.loginAttempts;
       return res.status(400).json({ 
         success: false,
-        message: `Invalid credentials. ${attemptsLeft > 0 ? `${attemptsLeft} attempts remaining` : 'Account will be locked after next failed attempt'}` 
+        message: `Invalid credentials. ${attemptsLeft > 0 ? ${attemptsLeft} attempts remaining : 'Account will be locked after next failed attempt'}` 
       });
     }
 
@@ -184,7 +186,7 @@ exports.login = async (req, res) => {
     if (user.suspended) {
       return res.status(400).json({ 
         success: false,
-        message: `Account suspended. Reason: ${user.suspensionReason || 'Violation of terms'}` 
+        message: Account suspended. Reason: ${user.suspensionReason || 'Violation of terms'} 
       });
     }
 
