@@ -67,10 +67,12 @@ exports.register = async (req, res) => {
       });
     }
 
-    // SIMPLIFIED: Check username without regex
-    const existingUsername = await User.findOne({ 
-      username: { $regex: new RegExp(^${username}$, 'i') }
-    });
+    // SIMPLIFIED: Check username without regex - get all and filter in memory
+    const allUsers = await User.find({});
+    const existingUsername = allUsers.find(user => 
+      user.username.toLowerCase() === username.toLowerCase()
+    );
+    
     if (existingUsername) {
       return res.status(400).json({ 
         success: false,
@@ -141,13 +143,12 @@ exports.login = async (req, res) => {
       });
     }
 
-    // SIMPLIFIED: Find user by email or username (case insensitive)
-    const user = await User.findOne({
-      $or: [
-        { email: emailOrUsername.toLowerCase() },
-        { username: { $regex: new RegExp(^${emailOrUsername}$, 'i') } }
-      ]
-    });
+    // SIMPLIFIED: Find user by checking both email and username without regex
+    const allUsers = await User.find({});
+    const user = allUsers.find(user => 
+      user.email.toLowerCase() === emailOrUsername.toLowerCase() ||
+      user.username.toLowerCase() === emailOrUsername.toLowerCase()
+    );
 
     if (!user) {
       return res.status(400).json({ 
