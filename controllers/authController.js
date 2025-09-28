@@ -67,7 +67,7 @@ exports.register = async (req, res) => {
       });
     }
 
-    // SIMPLIFIED: Check username without regex - get all and filter in memory
+    // Check username without regex
     const allUsers = await User.find({});
     const existingUsername = allUsers.find(user => 
       user.username.toLowerCase() === username.toLowerCase()
@@ -143,7 +143,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // SIMPLIFIED: Find user by checking both email and username without regex
+    // Find user by checking both email and username without regex
     const allUsers = await User.find({});
     const user = allUsers.find(user => 
       user.email.toLowerCase() === emailOrUsername.toLowerCase() ||
@@ -161,7 +161,7 @@ exports.login = async (req, res) => {
       const timeLeft = Math.ceil((user.lockUntil - Date.now()) / 60000);
       return res.status(400).json({ 
         success: false,
-        message: Account temporarily locked. Try again in ${timeLeft} minutes. 
+        message: 'Account temporarily locked. Try again in ' + timeLeft + ' minutes.' 
       });
     }
 
@@ -171,9 +171,16 @@ exports.login = async (req, res) => {
       await user.save();
       
       const attemptsLeft = 5 - user.loginAttempts;
+      let message = 'Invalid credentials. ';
+      if (attemptsLeft > 0) {
+        message += attemptsLeft + ' attempts remaining';
+      } else {
+        message += 'Account will be locked after next failed attempt';
+      }
+      
       return res.status(400).json({ 
         success: false,
-        message: `Invalid credentials. ${attemptsLeft > 0 ? ${attemptsLeft} attempts remaining : 'Account will be locked after next failed attempt'}` 
+        message: message
       });
     }
 
@@ -185,9 +192,16 @@ exports.login = async (req, res) => {
     }
 
     if (user.suspended) {
+      let message = 'Account suspended.';
+      if (user.suspensionReason) {
+        message += ' Reason: ' + user.suspensionReason;
+      } else {
+        message += ' Violation of terms';
+      }
+      
       return res.status(400).json({ 
         success: false,
-        message: Account suspended. Reason: ${user.suspensionReason || 'Violation of terms'} 
+        message: message
       });
     }
 
