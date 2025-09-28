@@ -52,10 +52,8 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Serve static files from public directory
 app.use(express.static('public'));
 
-// API routes
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/user', limiter, userRoutes);
 app.use('/api/transaction', limiter, transactionRoutes);
@@ -64,8 +62,7 @@ app.use('/api/rewards', limiter, rewardRoutes);
 app.use('/api/admin', limiter, adminRoutes);
 app.use('/api/announcements', limiter, announcementRoutes);
 
-// Health check
-app.get('/api/health', (req, res) => {
+app.get('/api/health', function(req, res) {
   res.status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),
@@ -74,14 +71,13 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Referral redirect
-app.get('/ref/:refCode', async (req, res) => {
+app.get('/ref/:refCode', async function(req, res) {
   try {
-    const { refCode } = req.params;
+    const refCode = req.params.refCode;
     const user = await mongoose.model('User').findOne({ referralCode: refCode });
     
     if (user) {
-      res.redirect(`/register?ref=${refCode}`);
+      res.redirect('/register?ref=' + refCode);
     } else {
       res.redirect('/register');
     }
@@ -90,66 +86,62 @@ app.get('/ref/:refCode', async (req, res) => {
   }
 });
 
-// Specific page routes
-app.get('/', (req, res) => {
+app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-app.get('/register', (req, res) => {
+app.get('/register', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'register.html'));
 });
 
-app.get('/dashboard', (req, res) => {
+app.get('/dashboard', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-app.get('/deposit', (req, res) => {
+app.get('/deposit', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'deposit.html'));
 });
 
-app.get('/withdraw', (req, res) => {
+app.get('/withdraw', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'withdraw.html'));
 });
 
-app.get('/tasks', (req, res) => {
+app.get('/tasks', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'tasks.html'));
 });
 
-app.get('/referral', (req, res) => {
+app.get('/referral', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'referral.html'));
 });
 
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'adlog.html'));
+app.get('/admin', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
 });
 
-app.get('/admin/dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'add-dash.html'));
+app.get('/admin/dashboard', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
 });
 
-// 404 route
-app.get('/404', (req, res) => {
+app.get('/404', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
-// Catch all handler - redirect to 404
-app.get('*', (req, res) => {
+app.get('*', function(req, res) {
   res.redirect('/404');
 });
 
-// Error handling middleware
-app.use((error, req, res, next) => {
+app.use(function(error, req, res, next) {
   console.error('Global error handler:', error);
   
   if (error.name === 'ValidationError') {
     return res.status(400).json({
       success: false,
       message: 'Validation error',
-      errors: Object.values(error.errors).map(err => err.message)
+      errors: Object.values(error.errors).map(function(err) { return err.message; })
     });
   }
   
@@ -164,7 +156,7 @@ app.use((error, req, res, next) => {
     const field = Object.keys(error.keyValue)[0];
     return res.status(400).json({
       success: false,
-      message: ${field} already exists
+      message: field + ' already exists'
     });
   }
   
@@ -184,153 +176,52 @@ app.use((error, req, res, next) => {
 
   res.status(error.status || 500).json({
     success: false,
-    message: process.env.NODE_ENV === 'production' 
-      ? 'Internal server error' 
-      : error.message
+    message: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message
   });
 });
 
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', function(err) {
   console.error('Unhandled Promise Rejection:', err);
   process.exit(1);
 });
 
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', function(err) {
   console.error('Uncaught Exception:', err);
   process.exit(1);
 });
 
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(🚀 Server running on port ${PORT});
-  console.log(🌍 Environment: ${process.env.NODE_ENV || 'development'});
-  console.log(📊 MongoDB: ${mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'});
+const server = app.listen(PORT, '0.0.0.0', function() {
+  console.log('Server running on port ' + PORT);
+  console.log('Environment: ' + (process.env.NODE_ENV || 'development'));
+  console.log('MongoDB: ' + (mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'));
 });
 
-const gracefulShutdown = (signal) => {
-  console.log(\n${signal} received, shutting down gracefully...);
+const gracefulShutdown = function(signal) {
+  console.log(signal + ' received, shutting down gracefully...');
   
-  server.close(() => {
+  server.close(function() {
     console.log('HTTP server closed');
     
-    mongoose.connection.close(false, () => {
+    mongoose.connection.close(false, function() {
       console.log('MongoDB connection closed');
       process.exit(0);
     });
   });
 
-  setTimeout(() => {
+  setTimeout(function() {
     console.error('Forced shutdown after timeout');
     process.exit(1);
   }, 10000);
 };
 
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-
-module.exports = app;  } catch (error) {
-    res.redirect(`${process.env.FRONTEND_URL}/register`);
-  }
+process.on('SIGTERM', function() {
+  gracefulShutdown('SIGTERM');
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+process.on('SIGINT', function() {
+  gracefulShutdown('SIGINT');
 });
-
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Endpoint not found'
-  });
-});
-
-app.use((error, req, res, next) => {
-  console.error('Global error handler:', error);
-  
-  if (error.name === 'ValidationError') {
-    return res.status(400).json({
-      success: false,
-      message: 'Validation error',
-      errors: Object.values(error.errors).map(err => err.message)
-    });
-  }
-  
-  if (error.name === 'CastError') {
-    return res.status(400).json({
-      success: false,
-      message: 'Invalid ID format'
-    });
-  }
-  
-  if (error.code === 11000) {
-    const field = Object.keys(error.keyValue)[0];
-    return res.status(400).json({
-      success: false,
-      message: `${field} already exists`
-    });
-  }
-  
-  if (error.name === 'JsonWebTokenError') {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid token'
-    });
-  }
-  
-  if (error.name === 'TokenExpiredError') {
-    return res.status(401).json({
-      success: false,
-      message: 'Token expired'
-    });
-  }
-
-  res.status(error.status || 500).json({
-    success: false,
-    message: process.env.NODE_ENV === 'production' 
-      ? 'Internal server error' 
-      : error.message
-  });
-});
-
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Promise Rejection:', err);
-  process.exit(1);
-});
-
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
-  process.exit(1);
-});
-
-const PORT = process.env.PORT || 5000;
-
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL}`);
-  console.log(`📊 MongoDB: ${mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'}`);
-});
-
-const gracefulShutdown = (signal) => {
-  console.log(`\n${signal} received, shutting down gracefully...`);
-  
-  server.close(() => {
-    console.log('HTTP server closed');
-    
-    mongoose.connection.close(false, () => {
-      console.log('MongoDB connection closed');
-      process.exit(0);
-    });
-  });
-
-  setTimeout(() => {
-    console.error('Forced shutdown after timeout');
-    process.exit(1);
-  }, 10000);
-};
-
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 module.exports = app;
