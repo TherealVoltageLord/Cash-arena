@@ -11,11 +11,6 @@ const generateTokens = (userId) => {
   return { token, refreshToken };
 };
 
-// Function to escape regex special characters
-const escapeRegex = (string) => {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-};
-
 const validateRegistration = (username, email, password) => {
   const errors = [];
   
@@ -72,12 +67,9 @@ exports.register = async (req, res) => {
       });
     }
 
-    // FIXED: Create the regex pattern properly
-    const escapedUsername = escapeRegex(username);
-    const usernamePattern = ^${escapedUsername}$;
-    
+    // SIMPLIFIED: Check username without regex
     const existingUsername = await User.findOne({ 
-      username: { $regex: usernamePattern, $options: 'i' }
+      username: { $regex: new RegExp(^${username}$, 'i') }
     });
     if (existingUsername) {
       return res.status(400).json({ 
@@ -149,14 +141,11 @@ exports.login = async (req, res) => {
       });
     }
 
-    // FIXED: Create the regex pattern properly
-    const escapedInput = escapeRegex(emailOrUsername);
-    const usernamePattern = ^${escapedInput}$;
-    
+    // SIMPLIFIED: Find user by email or username (case insensitive)
     const user = await User.findOne({
       $or: [
-        { email: emailOrUsername.toLowerCase() }, 
-        { username: { $regex: usernamePattern, $options: 'i' } }
+        { email: emailOrUsername.toLowerCase() },
+        { username: { $regex: new RegExp(^${emailOrUsername}$, 'i') } }
       ]
     });
 
