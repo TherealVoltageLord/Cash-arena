@@ -16,7 +16,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0A2540 0%, #374151 100%);
             color: white;
-            min-height: 100vh;
+            line-height: 1.6;
         }
 
         .container {
@@ -25,21 +25,22 @@
             padding: 0 20px;
         }
 
-        /* Navigation */
-        nav {
+        /* Header */
+        header {
             background: rgba(10, 37, 64, 0.95);
             backdrop-filter: blur(10px);
-            padding: 1rem 0;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
         }
 
-        .nav-content {
+        .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 1rem 0;
         }
 
         .logo {
@@ -48,16 +49,21 @@
             color: #10B981;
         }
 
+        .logo i {
+            margin-right: 10px;
+        }
+
         .nav-links {
             display: flex;
+            list-style: none;
             gap: 2rem;
-            align-items: center;
         }
 
         .nav-links a {
             color: white;
             text-decoration: none;
             transition: color 0.3s;
+            font-weight: 500;
         }
 
         .nav-links a:hover {
@@ -77,7 +83,6 @@
             transition: all 0.3s;
             border: none;
             cursor: pointer;
-            font-size: 0.9rem;
         }
 
         .btn-outline {
@@ -98,57 +103,66 @@
 
         /* Hero Section */
         .hero {
-            padding: 120px 0 80px;
+            padding: 150px 0 80px;
             text-align: center;
+            background: linear-gradient(135deg, #0A2540 0%, #1E3A5F 100%);
         }
 
         .hero h1 {
             font-size: 3.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #10B981, #34D399);
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #10B981, #34D399);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
             opacity: 0.9;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
 
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         /* Features */
         .features {
             padding: 80px 0;
-            background: rgba(55, 65, 81, 0.5);
+            background: #374151;
         }
 
         .section-title {
             text-align: center;
-            margin-bottom: 3rem;
             font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #10B981;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
         }
 
         .feature-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.05);
             padding: 2rem;
             border-radius: 15px;
             text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            background: rgba(255,255,255,0.08);
         }
 
         .feature-icon {
@@ -157,9 +171,65 @@
             margin-bottom: 1rem;
         }
 
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 80px 0;
+            background: #0A2540;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #10B981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        /* Announcements */
+        .announcements {
+            padding: 80px 0;
+            background: #374151;
+        }
+
+        .announcement-card {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #10B981;
+        }
+
+        .announcement-card h3 {
+            color: #10B981;
+            margin-bottom: 1rem;
+        }
+
         /* Stats */
         .stats {
             padding: 80px 0;
+            background: #0A2540;
             text-align: center;
         }
 
@@ -171,13 +241,11 @@
         }
 
         .stat-item {
-            background: rgba(255, 255, 255, 0.05);
             padding: 2rem;
-            border-radius: 10px;
         }
 
         .stat-number {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: bold;
             color: #10B981;
             margin-bottom: 0.5rem;
@@ -185,8 +253,8 @@
 
         /* Footer */
         footer {
-            background: rgba(10, 37, 64, 0.9);
-            padding: 3rem 0;
+            background: #1F2937;
+            padding: 3rem 0 2rem;
             text-align: center;
         }
 
@@ -195,6 +263,7 @@
             justify-content: center;
             gap: 2rem;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
 
         .footer-links a {
@@ -207,10 +276,20 @@
             color: #10B981;
         }
 
+        .copyright {
+            opacity: 0.7;
+            margin-top: 2rem;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
             .nav-links {
-                display: none;
+                gap: 1rem;
             }
 
             .hero h1 {
@@ -218,142 +297,152 @@
             }
 
             .hero p {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
+    <!-- Header -->
+    <header>
         <div class="container">
-            <div class="nav-content">
+            <nav class="navbar">
                 <div class="logo">
-                    <i class="fas fa-coins"></i> Cash Arena
+                    <i class="fas fa-coins"></i>Cash Arena
                 </div>
-                <div class="nav-links">
-                    <a href="#features">Features</a>
-                    <a href="#how-it-works">How It Works</a>
-                    <a href="#stats">Stats</a>
-                </div>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#announcements">Announcements</a></li>
+                </ul>
                 <div class="auth-buttons">
-                    <a href="login.html" class="btn btn-outline">Login</a>
-                    <a href="register.html" class="btn btn-primary">Get Started</a>
+                    <a href="/login" class="btn btn-outline">Login</a>
+                    <a href="/register" class="btn btn-primary">Register</a>
                 </div>
-            </div>
+            </nav>
         </div>
-    </nav>
+    </header>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="home">
         <div class="container">
-            <h1>Invest Smart, Earn Smarter</h1>
-            <p>Join thousands of investors earning daily returns through our secure investment platform. Complete tasks, refer friends, and grow your wealth.</p>
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                <a href="register.html" class="btn btn-primary" style="padding: 1rem 2rem;">
-                    <i class="fas fa-rocket"></i> Start Investing
+            <h1>Turn Your Time Into Earnings</h1>
+            <p>Join hundreds already earning through tasks, daily logins, and referrals. Start your investment journey today!</p>
+            <div class="hero-buttons">
+                <a href="/register" class="btn btn-primary">
+                    <i class="fas fa-rocket"></i> Get Started
                 </a>
-                <a href="#how-it-works" class="btn btn-outline" style="padding: 1rem 2rem;">
-                    <i class="fas fa-play-circle"></i> How It Works
+                <a href="/login" class="btn btn-outline">
+                    <i class="fas fa-sign-in-alt"></i> Login
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Features -->
+    <!-- Features Section -->
     <section class="features" id="features">
         <div class="container">
             <h2 class="section-title">Why Choose Cash Arena?</h2>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-calendar-check"></i>
                     </div>
-                    <h3>Daily ROI</h3>
-                    <p>Earn daily returns on your investments with our tier-based ROI system. Higher tiers, higher returns.</p>
+                    <h3>Daily Login Rewards</h3>
+                    <p>Claim daily bonuses and maintain your streak to maximize earnings. Never miss a day!</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-tasks"></i>
                     </div>
-                    <h3>Task Rewards</h3>
-                    <p>Complete simple tasks and earn extra rewards. Watch ads, take surveys, and more.</p>
+                    <h3>Perform Tasks</h3>
+                    <p>Complete admin-approved tasks and get paid instantly. Various tasks available daily.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-users"></i>
                     </div>
-                    <h3>Referral System</h3>
-                    <p>Invite friends and earn bonuses when they join and make their first deposit.</p>
+                    <h3>Referral Program</h3>
+                    <p>Invite friends and earn commissions on their activities. Grow your network, grow your income.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
-                    <h3>Secure Platform</h3>
-                    <p>Your investments are safe with our secure platform and encrypted transactions.</p>
+                    <h3>Secure Transactions</h3>
+                    <p>Safe deposits & withdrawals with admin-reviewed transactions. Your security is our priority.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- How It Works -->
-    <section class="features" id="how-it-works" style="background: rgba(10, 37, 64, 0.5);">
+    <section class="how-it-works" id="how-it-works">
         <div class="container">
             <h2 class="section-title">How It Works</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <h3>1. Register</h3>
-                    <p>Create your account and verify your email to get started with your investment journey.</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Register</h3>
+                    <p>Create your free account in seconds</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <h3>2. Invest</h3>
-                    <p>Deposit funds starting from ₦5,000 and choose your investment tier.</p>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Fund Wallet</h3>
+                    <p>Deposit securely to start earning</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-gift"></i>
-                    </div>
-                    <h3>3. Earn Daily</h3>
-                    <p>Claim your daily ROI rewards and complete tasks for extra earnings.</p>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Perform Tasks</h3>
+                    <p>Complete daily/weekly tasks</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                    <h3>4. Withdraw</h3>
-                    <p>Withdraw your earnings anytime with our secure withdrawal system.</p>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Earn Rewards</h3>
+                    <p>Withdraw earnings anytime</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Stats -->
-    <section class="stats" id="stats">
+    <!-- Announcements -->
+    <section class="announcements" id="announcements">
         <div class="container">
-            <h2 class="section-title">Platform Statistics</h2>
+            <h2 class="section-title">Latest Updates</h2>
+            <div id="announcements-container">
+                <!-- Default announcement -->
+                <div class="announcement-card">
+                    <h3><i class="fas fa-bullhorn"></i> Join Our WhatsApp Channel</h3>
+                    <p>We are now on WhatsApp! Follow to get the latest updates, new tasks, and exclusive opportunities.</p>
+                    <a href="https://wa.channel.com" class="btn btn-primary" style="margin-top: 1rem;">
+                        <i class="fab fa-whatsapp"></i> Follow us Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <h2 class="section-title">Join Our Growing Community</h2>
             <div class="stats-grid">
                 <div class="stat-item">
-                    <div class="stat-number" id="totalUsers">10,000+</div>
-                    <div class="stat-label">Active Users</div>
+                    <div class="stat-number">10,000+</div>
+                    <p>Active Users</p>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="totalInvested">₦50M+</div>
-                    <div class="stat-label">Total Invested</div>
+                    <div class="stat-number">₦5M+</div>
+                    <p>Total Payouts</p>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="totalPaid">₦15M+</div>
-                    <div class="stat-label">Total Paid Out</div>
+                    <div class="stat-number">500+</div>
+                    <p>Daily Tasks</p>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="successRate">99%</div>
-                    <div class="stat-label">Success Rate</div>
+                    <div class="stat-number">99%</div>
+                    <p>Satisfaction Rate</p>
                 </div>
             </div>
         </div>
@@ -362,47 +451,62 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="logo" style="margin-bottom: 1rem;">
-                <i class="fas fa-coins"></i> Cash Arena
-            </div>
             <div class="footer-links">
-                <a href="#features">Features</a>
-                <a href="#how-it-works">How It Works</a>
                 <a href="/login">Login</a>
                 <a href="/register">Register</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="mailto:support@casharena.com">Support</a>
             </div>
-            <p>&copy; 2025 Cash Arena. All rights reserved.</p>
+            <div class="copyright">
+                <p>© Cash Arena 2025. All Rights Reserved.</p>
+                <p>Contact: support@casharena.com</p>
+            </div>
         </div>
     </footer>
 
     <script>
-        // Simple counter animation for stats
-        function animateCounter(element, target) {
-            let current = 0;
-            const increment = target / 100;
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    element.textContent = target + '+';
-                    clearInterval(timer);
-                } else {
-                    element.textContent = Math.floor(current) + '+';
+        // Load announcements from API
+        async function loadAnnouncements() {
+            try {
+                const response = await fetch('/api/announcements');
+                const data = await response.json();
+                
+                if (data.success && data.announcements.length > 0) {
+                    const container = document.getElementById('announcements-container');
+                    container.innerHTML = '';
+                    
+                    data.announcements.forEach(announcement => {
+                        const announcementCard = `
+                            <div class="announcement-card">
+                                <h3><i class="fas fa-bullhorn"></i> ${announcement.title}</h3>
+                                <p>${announcement.message}</p>
+                                ${announcement.link ? <a href="${announcement.link}" class="btn btn-primary" style="margin-top: 1rem;">Learn More</a> : ''}
+                            </div>
+                        `;
+                        container.innerHTML += announcementCard;
+                    });
                 }
-            }, 20);
+            } catch (error) {
+                console.log('Using default announcement');
+            }
         }
 
-        // Animate stats when they come into view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounter(document.getElementById('totalUsers'), 10000);
-                    animateCounter(document.getElementById('totalInvested'), 50);
-                    animateCounter(document.getElementById('totalPaid'), 15);
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
             });
         });
 
-        observer.observe(document.querySelector('.stats'));
+        // Load announcements when page loads
+        document.addEventListener('DOMContentLoaded', loadAnnouncements);
     </script>
 </body>
 </html>
