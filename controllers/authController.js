@@ -72,9 +72,12 @@ exports.register = async (req, res) => {
       });
     }
 
-    // FIXED: Use case-insensitive search without regex
+    // FIXED: Create the regex pattern properly
+    const escapedUsername = escapeRegex(username);
+    const usernamePattern = ^${escapedUsername}$;
+    
     const existingUsername = await User.findOne({ 
-      username: { $regex: ^${escapeRegex(username)}$, $options: 'i' }
+      username: { $regex: usernamePattern, $options: 'i' }
     });
     if (existingUsername) {
       return res.status(400).json({ 
@@ -146,11 +149,14 @@ exports.login = async (req, res) => {
       });
     }
 
-    // FIXED: Use case-insensitive search without creating RegExp objects
+    // FIXED: Create the regex pattern properly
+    const escapedInput = escapeRegex(emailOrUsername);
+    const usernamePattern = ^${escapedInput}$;
+    
     const user = await User.findOne({
       $or: [
         { email: emailOrUsername.toLowerCase() }, 
-        { username: { $regex: ^${escapeRegex(emailOrUsername)}$, $options: 'i' } }
+        { username: { $regex: usernamePattern, $options: 'i' } }
       ]
     });
 
