@@ -24,110 +24,81 @@
         }
 
         .container {
-            display: flex;
-            max-width: 1000px;
+            max-width: 450px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .left-panel {
-            flex: 1;
-            background: linear-gradient(135deg, #10B981 0%, #0A2540 100%);
-            padding: 3rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .right-panel {
-            flex: 1;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.05);
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: white;
+            text-align: center;
             margin-bottom: 2rem;
-        }
-
-        .welcome-text h1 {
             font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #fff, #10B981);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .welcome-text p {
-            opacity: 0.9;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        }
-
-        .benefits {
-            list-style: none;
-        }
-
-        .benefits li {
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .benefits i {
             color: #10B981;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #10B981;
+            font-size: 1.8rem;
         }
 
         .form-group {
             margin-bottom: 1.5rem;
         }
 
-        .form-group label {
+        label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: 600;
+            font-weight: 500;
+            color: #E5E7EB;
         }
 
-        .form-control {
+        input {
             width: 100%;
             padding: 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
             color: white;
             font-size: 1rem;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
-        .form-control:focus {
+        input:focus {
             outline: none;
             border-color: #10B981;
-            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            background: rgba(255,255,255,0.15);
         }
 
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+        input::placeholder {
+            color: #9CA3AF;
         }
 
         .btn {
             width: 100%;
             padding: 1rem;
-            border: none;
-            border-radius: 10px;
             background: #10B981;
             color: white;
+            border: none;
+            border-radius: 8px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -135,257 +106,316 @@
         }
 
         .btn:hover {
-            background: #0EA371;
+            background: #0da271;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
         }
 
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #6B7280;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .login-link {
             text-align: center;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
+            color: #9CA3AF;
         }
 
         .login-link a {
             color: #10B981;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 500;
+            transition: color 0.3s;
         }
 
         .login-link a:hover {
+            color: #34D399;
             text-decoration: underline;
         }
 
-        .alert {
+        .message {
             padding: 1rem;
-            border-radius: 10px;
+            border-radius: 8px;
             margin-bottom: 1rem;
-            display: none;
+            text-align: center;
+            font-weight: 500;
         }
 
-        .alert-success {
-            background: rgba(16, 185, 129, 0.2);
+        .message.success {
+            background: rgba(16, 185, 129, 0.1);
             border: 1px solid #10B981;
             color: #10B981;
         }
 
-        .alert-error {
-            background: rgba(239, 68, 68, 0.2);
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
             border: 1px solid #EF4444;
             color: #EF4444;
         }
 
         .password-strength {
             margin-top: 0.5rem;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
         }
 
         .strength-bar {
             height: 4px;
-            background: rgba(255, 255, 255, 0.2);
+            background: #4B5563;
             border-radius: 2px;
-            margin-top: 0.5rem;
+            margin-top: 0.25rem;
             overflow: hidden;
         }
 
         .strength-fill {
             height: 100%;
-            width: 0%;
-            transition: all 0.3s;
             border-radius: 2px;
+            transition: all 0.3s ease;
         }
 
-        .weak { background: #EF4444; width: 33%; }
-        .medium { background: #F59E0B; width: 66%; }
-        .strong { background: #10B981; width: 100%; }
+        .strength-weak {
+            background: #EF4444;
+            width: 33%;
+        }
 
-        @media (max-width: 768px) {
+        .strength-medium {
+            background: #F59E0B;
+            width: 66%;
+        }
+
+        .strength-strong {
+            background: #10B981;
+            width: 100%;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading.active {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
             .container {
-                flex-direction: column;
+                max-width: 100%;
             }
-            
-            .left-panel {
-                display: none;
+
+            .card {
+                padding: 2rem 1.5rem;
             }
-            
-            .right-panel {
-                padding: 2rem;
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .card h2 {
+                font-size: 1.5rem;
+            }
+
+            input {
+                padding: 0.875rem;
+            }
+
+            .btn {
+                padding: 0.875rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Left Panel -->
-        <div class="left-panel">
-            <div class="logo">
-                <i class="fas fa-coins"></i> Cash Arena
-            </div>
-            <div class="welcome-text">
-                <h1>Start Your Investment Journey</h1>
-                <p>Join thousands of smart investors earning daily returns. Your path to financial freedom starts here.</p>
-                <ul class="benefits">
-                    <li><i class="fas fa-check-circle"></i> Daily ROI Rewards</li>
-                    <li><i class="fas fa-check-circle"></i> Task Completion Bonuses</li>
-                    <li><i class="fas fa-check-circle"></i> Referral Commission</li>
-                    <li><i class="fas fa-check-circle"></i> Secure Withdrawals</li>
-                    <li><i class="fas fa-check-circle"></i> 24/7 Support</li>
-                </ul>
-            </div>
+        <div class="logo">
+            <i class="fas fa-coins"></i> Cash Arena
         </div>
-
-        <!-- Right Panel -->
-        <div class="right-panel">
-            <div class="logo mobile-logo" style="display: none;">
-                <i class="fas fa-coins"></i> Cash Arena
-            </div>
+        <div class="card">
+            <h2>Create Your Account</h2>
             
-            <h2 style="margin-bottom: 2rem; text-align: center;">Create Account</h2>
-            
-            <div id="alert" class="alert"></div>
+            <div id="messageContainer"></div>
 
             <form id="registerForm">
                 <div class="form-group">
-                    <label for="username"><i class="fas fa-user"></i> Username</label>
-                    <input type="text" id="username" class="form-control" placeholder="Choose a username" required>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required 
+                           placeholder="Enter your username" minlength="3" maxlength="30">
                 </div>
 
                 <div class="form-group">
-                    <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
-                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="Enter your email">
                 </div>
 
                 <div class="form-group">
-                    <label for="password"><i class="fas fa-lock"></i> Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="Enter your password" minlength="6">
                     <div class="password-strength">
-                        <div>Password strength: <span id="strength-text">None</span></div>
+                        <div id="strengthText" style="color: #9CA3AF;">Password strength</div>
                         <div class="strength-bar">
-                            <div class="strength-fill" id="strength-bar"></div>
+                            <div id="strengthFill" class="strength-fill"></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="referredBy"><i class="fas fa-user-friends"></i> Referral Code (Optional)</label>
-                    <input type="text" id="referredBy" class="form-control" placeholder="Enter referral code if any">
+                    <label for="referredBy">Referral Code (Optional)</label>
+                    <input type="text" id="referredBy" name="referredBy" 
+                           placeholder="Enter referral code if any">
                 </div>
 
-                <div class="form-group">
-                    <label style="display: flex; align-items: center; gap: 0.5rem;">
-                        <input type="checkbox" id="terms" required style="width: auto;">
-                        I agree to the <a href="#" style="color: #10B981;">Terms & Conditions</a> and <a href="#" style="color: #10B981;">Privacy Policy</a>
-                    </label>
-                </div>
-
-                <button type="submit" class="btn">
-                    <i class="fas fa-user-plus"></i> Create Account
+                <button type="submit" class="btn" id="submitBtn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Create Account</span>
+                    <i class="fas fa-spinner loading" id="loadingSpinner"></i>
                 </button>
             </form>
 
             <div class="login-link">
-                Already have an account? <a href="login.html">Sign In</a>
+                Already have an account? <a href="/login">Sign in here</a>
             </div>
         </div>
     </div>
 
     <script>
-        // Get URL parameters for referral code
+        // Auto-fill referral code from URL
         const urlParams = new URLSearchParams(window.location.search);
         const refCode = urlParams.get('ref');
         if (refCode) {
             document.getElementById('referredBy').value = refCode;
         }
 
-        // Password strength checker
+        // Password strength indicator
         const passwordInput = document.getElementById('password');
-        const strengthText = document.getElementById('strength-text');
-        const strengthBar = document.getElementById('strength-bar');
+        const strengthText = document.getElementById('strengthText');
+        const strengthFill = document.getElementById('strengthFill');
 
         passwordInput.addEventListener('input', function() {
             const password = this.value;
             let strength = 0;
+            let text = 'Password strength';
+            let color = '#9CA3AF';
 
-            if (password.length >= 6) strength += 1;
-            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 1;
-            if (password.match(/\d/)) strength += 1;
-            if (password.match(/[^a-zA-Z\d]/)) strength += 1;
+            if (password.length >= 6) strength++;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
 
-            strengthBar.className = 'strength-fill';
             if (password.length === 0) {
-                strengthText.textContent = 'None';
-                strengthBar.style.width = '0%';
-            } else if (strength <= 1) {
-                strengthText.textContent = 'Weak';
-                strengthBar.classList.add('weak');
+                text = 'Password strength';
+                color = '#9CA3AF';
+                strengthFill.className = 'strength-fill';
+                strengthFill.style.width = '0%';
             } else if (strength <= 2) {
-                strengthText.textContent = 'Medium';
-                strengthBar.classList.add('medium');
+                text = 'Weak password';
+                color = '#EF4444';
+                strengthFill.className = 'strength-fill strength-weak';
+            } else if (strength <= 4) {
+                text = 'Medium password';
+                color = '#F59E0B';
+                strengthFill.className = 'strength-fill strength-medium';
             } else {
-                strengthText.textContent = 'Strong';
-                strengthBar.classList.add('strong');
+                text = 'Strong password';
+                color = '#10B981';
+                strengthFill.className = 'strength-fill strength-strong';
             }
+
+            strengthText.textContent = text;
+            strengthText.style.color = color;
         });
 
-        // Form submission
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // Show message function
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = <div class="message ${type}">${message}</div>;
+            
+            // Auto-hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageContainer.innerHTML = '';
+                }, 5000);
+            }
+        }
 
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+        // Handle form submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const submitText = submitBtn.querySelector('span');
+            
+            // Show loading state
             submitBtn.disabled = true;
+            loadingSpinner.classList.add('active');
+            submitText.textContent = 'Creating Account...';
 
             const formData = {
-                username: document.getElementById('username').value,
-                email: document.getElementById('email').value,
+                username: document.getElementById('username').value.trim(),
+                email: document.getElementById('email').value.trim().toLowerCase(),
                 password: document.getElementById('password').value,
-                referredBy: document.getElementById('referredBy').value || undefined
+                referredBy: document.getElementById('referredBy').value.trim() || undefined
             };
 
             try {
                 const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(formData)
                 });
 
                 const data = await response.json();
-
+                
                 if (data.success) {
-                    showAlert(data.message, 'success');
+                    showMessage(data.message, 'success');
+                    // Clear form
                     document.getElementById('registerForm').reset();
-                    // Redirect to login after 2 seconds
+                    // Redirect to login after 3 seconds
                     setTimeout(() => {
-                        window.location.href = 'login.html?message=Registration successful. Please check your email to verify your account.';
-                    }, 2000);
+                        window.location.href = '/login';
+                    }, 3000);
                 } else {
-                    showAlert(data.message || 'Registration failed', 'error');
+                    let errorMessage = data.message || 'Registration failed';
+                    if (data.errors && data.errors.length > 0) {
+                        errorMessage = data.errors.join(', ');
+                    }
+                    showMessage(errorMessage, 'error');
                 }
             } catch (error) {
-                showAlert('Network error. Please try again.', 'error');
+                console.error('Registration error:', error);
+                showMessage('Network error. Please check your connection and try again.', 'error');
             } finally {
-                submitBtn.innerHTML = originalText;
+                // Reset button state
                 submitBtn.disabled = false;
+                loadingSpinner.classList.remove('active');
+                submitText.textContent = 'Create Account';
             }
         });
 
-        function showAlert(message, type) {
-            const alert = document.getElementById('alert');
-            alert.textContent = message;
-            alert.className = alert alert-${type};
-            alert.style.display = 'block';
-            
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 5000);
-        }
-
-        // Show mobile logo on small screens
-        if (window.innerWidth <= 768) {
-            document.querySelector('.mobile-logo').style.display = 'block';
-        }
+        // Enter key support
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const focused = document.activeElement;
+                if (focused && focused.form && focused.form.id === 'registerForm') {
+                    document.getElementById('registerForm').dispatchEvent(new Event('submit'));
+                }
+            }
+        });
     </script>
 </body>
 </html>
