@@ -180,14 +180,24 @@ app.use(function(error, req, res, next) {
   });
 });
 
+// NOTE: This handler now attempts graceful shutdown instead of force-exiting immediately.
 process.on('unhandledRejection', function(err) {
   console.error('Unhandled Promise Rejection:', err);
-  process.exit(1);
+  // attempt graceful shutdown, label signal
+  gracefulShutdown('unhandledRejection').catch((shutdownErr) => {
+    console.error('Error during graceful shutdown after unhandledRejection:', shutdownErr);
+    process.exit(1);
+  });
 });
 
+// NOTE: This handler now attempts graceful shutdown too.
 process.on('uncaughtException', function(err) {
   console.error('Uncaught Exception:', err);
-  process.exit(1);
+  // attempt graceful shutdown, label signal
+  gracefulShutdown('uncaughtException').catch((shutdownErr) => {
+    console.error('Error during graceful shutdown after uncaughtException:', shutdownErr);
+    process.exit(1);
+  });
 });
 
 const PORT = process.env.PORT || 5000;
@@ -198,30 +208,59 @@ const server = app.listen(PORT, '0.0.0.0', function() {
   console.log('MongoDB: ' + (mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'));
 });
 
-const gracefulShutdown = function(signal) {
+// Graceful shutdown using promises (compatible with Mongoose v7+)
+const gracefulShutdown = async function(signal) {
   console.log(signal + ' received, shutting down gracefully...');
-  
-  server.close(function() {
-    console.log('HTTP server closed');
-    
-    mongoose.connection.close(false, function() {
-      console.log('MongoDB connection closed');
-      process.exit(0);
-    });
-  });
 
-  setTimeout(function() {
+  // create a forced timeout in case shutdown hangs
+  const forceTimeout = setTimeout(() => {
     console.error('Forced shutdown after timeout');
     process.exit(1);
   }, 10000);
+
+  // helper to close server (wrapped in a Promise so we can await it)
+  const closeServer = () => {
+    return new Promise((resolve, reject) => {
+      if (!server) {
+        return resolve();
+      }
+      server.close((err) => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
+  };
+
+  try {
+    await closeServer();
+    console.log('HTTP server closed');
+  } catch (err) {
+    console.error('Error closing HTTP server:', err);
+  }
+
+  try {
+    await mongoose.connection.close(false);
+    console.log('MongoDB connection closed');
+  } catch (err) {
+    console.error('Error closing MongoDB connection:', err);
+  } finally {
+    clearTimeout(forceTimeout);
+    process.exit(0);
+  }
 };
 
 process.on('SIGTERM', function() {
-  gracefulShutdown('SIGTERM');
+  gracefulShutdown('SIGTERM').catch((err) => {
+    console.error('Error during SIGTERM graceful shutdown:', err);
+    process.exit(1);
+  });
 });
 
 process.on('SIGINT', function() {
-  gracefulShutdown('SIGINT');
+  gracefulShutdown('SIGINT').catch((err) => {
+    console.error('Error during SIGINT graceful shutdown:', err);
+    process.exit(1);
+  });
 });
 
 module.exports = app;
