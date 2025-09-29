@@ -407,11 +407,17 @@
             }
         });
 
+        // Prevent default form submission (this is the key fix)
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault(); // This prevents the default form submission
+        });
+
         // Enter key support
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const focused = document.activeElement;
                 if (focused && focused.form && focused.form.id === 'registerForm') {
+                    e.preventDefault(); // Prevent default form submission
                     document.getElementById('registerForm').dispatchEvent(new Event('submit'));
                 }
             }
