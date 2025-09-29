@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit - Cash Arena</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0A2540 0%, #374151 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(10, 37, 64, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #10B981;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #10B981;
+        }
+
+        .back-btn {
+            color: #10B981;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 120px 0 40px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: #10B981;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Deposit Card */
+        .deposit-card {
+            background: rgba(255,255,255,0.05);
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .balance-info {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+        }
+
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #10B981;
+        }
+
+        /* Bank Details Section */
+        .bank-details {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10B981;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .bank-details h3 {
+            color: #10B981;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bank-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bank-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+        }
+
+        .bank-item strong {
+            color: #10B981;
+        }
+
+        .copy-btn {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #0da271;
+        }
+
+        .instructions {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .instructions ol {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #E5E7EB;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .amount-input {
+            position: relative;
+        }
+
+        .currency {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+        }
+
+        .amount-input input {
+            padding-left: 3rem;
+        }
+
+        .limits {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #9CA3AF;
+        }
+
+        .confirmation-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+        }
+
+        .confirmation-checkbox input {
+            width: auto;
+        }
+
+        .confirmation-checkbox label {
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: #10B981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn:disabled {
+            background: #6B7280;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading.active {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10B981;
+            color: #10B981;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #EF4444;
+            color: #EF4444;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .deposit-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .bank-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-coins"></i>Cash Arena
+                </div>
+                <ul class="nav-links">
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/deposit" class="active">Deposit</a></li>
+                    <li><a href="/withdraw">Withdraw</a></li>
+                    <li><a href="/tasks">Tasks</a></li>
+                    <li><a href="/referral">Referral</a></li>
+                </ul>
+                <a href="/dashboard" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Deposit Funds</h1>
+                <p>Add funds to your account to start earning</p>
+            </div>
+
+            <div class="deposit-card">
+                <div class="balance-info">
+                    <div>Current Balance</div>
+                    <div class="balance-amount" id="currentBalance">₦0.00</div>
+                </div>
+
+                <!-- Bank Details Section -->
+                <div class="bank-details">
+                    <h3><i class="fas fa-university"></i> Bank Transfer Details</h3>
+                    
+                    <div class="bank-info">
+                        <div class="bank-item">
+                            <span>Bank Name:</span>
+                            <strong>Opay</strong>
+                        </div>
+                        <div class="bank-item">
+                            <span>Account Number:</span>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <strong id="accountNumber">7045674902</strong>
+                                <button class="copy-btn" onclick="copyAccountNumber()">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bank-item">
+                            <span>Account Name:</span>
+                            <strong>Odunayo Ayinla</strong>
+                        </div>
+                        <div class="bank-item">
+                            <span>Bank Type:</span>
+                            <strong>Digital Bank</strong>
+                        </div>
+                    </div>
+
+                    <div class="instructions">
+                        <strong><i class="fas fa-info-circle"></i> Instructions:</strong>
+                        <ol>
+                            <li>Transfer the exact amount to the account details above</li>
+                            <li>Fill the deposit form below with the transferred amount</li>
+                            <li>Check the confirmation box after payment</li>
+                            <li>Submit the form for manual approval</li>
+                            <li>Funds will be added to your balance after verification (usually within 24 hours)</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div id="messageContainer"></div>
+
+                <form id="depositForm">
+                    <div class="form-group">
+                        <label for="amount">Deposit Amount</label>
+                        <div class="amount-input">
+                            <span class="currency">₦</span>
+                            <input type="number" id="amount" name="amount" required 
+                                   placeholder="Enter exact amount transferred" min="5000" max="100000" step="100">
+                        </div>
+                        <div class="limits">Minimum: ₦5,000 | Maximum: ₦100,000</div>
+                    </div>
+
+                    <div class="confirmation-checkbox">
+                        <input type="checkbox" id="paymentConfirmed" name="paymentConfirmed" required>
+                        <label for="paymentConfirmed">I confirm that I have transferred the exact amount to the provided bank account</label>
+                    </div>
+
+                    <button type="submit" class="btn" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Submit Deposit Request</span>
+                        <i class="fas fa-spinner loading" id="loadingSpinner"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login';
+        }
+
+        // Copy account number function
+        function copyAccountNumber() {
+            const accountNumber = document.getElementById('accountNumber').textContent;
+            navigator.clipboard.writeText(accountNumber).then(() => {
+                // Show temporary success message
+                const copyBtn = event.target.closest('.copy-btn');
+                const originalHtml = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                copyBtn.style.background = '#059669';
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalHtml;
+                    copyBtn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy account number');
+            });
+        }
+
+        // Load user balance
+        async function loadBalance() {
+            try {
+                const response = await fetch('/api/user/dashboard', {
+                    headers: {
+                        'Authorization': Bearer ${token}
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('currentBalance').textContent = 
+                        ₦${data.balance.toLocaleString()};
+                }
+            } catch (error) {
+                console.error('Error loading balance:', error);
+            }
+        }
+
+        // Show message function
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = <div class="message ${type}">${message}</div>;
+        }
+
+        // Handle deposit form submission
+        document.getElementById('depositForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const submitText = submitBtn.querySelector('span');
+            
+            // Check if payment is confirmed
+            if (!document.getElementById('paymentConfirmed').checked) {
+                showMessage('Please confirm that you have made the payment', 'error');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            loadingSpinner.classList.add('active');
+            submitText.textContent = 'Submitting Request...';
+
+            const formData = {
+                amount: parseInt(document.getElementById('amount').value)
+            };
+
+            try {
+                const response = await fetch('/api/transaction/deposit', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': Bearer ${token},
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Deposit request submitted successfully! Your payment will be verified manually. You will be notified once approved.', 'success');
+                    document.getElementById('depositForm').reset();
+                    loadBalance(); // Refresh balance
+                } else {
+                    showMessage(data.message || 'Deposit request failed', 'error');
+                }
+            } catch (error) {
+                console.error('Deposit error:', error);
+                showMessage('Network error. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                loadingSpinner.classList.remove('active');
+                submitText.textContent = 'Submit Deposit Request';
+            }
+        });
+
+        // Real-time amount validation
+        document.getElementById('amount').addEventListener('input', function() {
+            const amount = parseInt(this.value);
+            const minAmount = 5000;
+            const maxAmount = 100000;
+            
+            if (amount < minAmount) {
+                this.setCustomValidity(Minimum deposit is ₦${minAmount.toLocaleString()});
+            } else if (amount > maxAmount) {
+                this.setCustomValidity(Maximum deposit is ₦${maxAmount.toLocaleString()});
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Load balance when page loads
+        document.addEventListener('DOMContentLoaded', loadBalance);
+    </script>
+</body>
+</html>
