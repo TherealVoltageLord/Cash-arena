@@ -119,11 +119,11 @@ app.get('/referral', function(req, res) {
 });
 
 app.get('/admin', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
+  res.sendFile(path.join(__dirname, 'public', 'adlog.html'));
 });
 
 app.get('/admin/dashboard', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
+  res.sendFile(path.join(__dirname, 'public', 'ad-dash.html'));
 });
 
 app.get('/404', function(req, res) {
